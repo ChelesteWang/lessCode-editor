@@ -1,11 +1,27 @@
+function generateElement(element) {
+  const { tag, attributes = {}, content = "", styles = {}, children = [] } = element;
+  const attributesStr = Object.entries(attributes)
+    .map(([key, value]) => `${key}="${value}"`)
+    .join(" ");
+
+  let htmlCode = `<${tag} ${attributesStr}>${content}`;
+  if (children.length > 0) {
+    htmlCode += "<div style=\"display: flex;\">";
+    children.forEach((child) => {
+      htmlCode += `<div>${child.content}</div>`;
+    });
+    htmlCode += "</div>";
+  }
+  htmlCode += `</${tag}>\n`;
+
+  return htmlCode;
+}
+
 function generateHTML(jsonData) {
   let htmlCode = "<html>\n<head>\n<title>Generated Page</title>\n<style>\n";
 
   jsonData.forEach((element) => {
-    const { tag, attributes = {}, content = "", styles = {}, children = [] } = element;
-    const attributesStr = Object.entries(attributes)
-      .map(([key, value]) => `${key}="${value}"`)
-      .join(" ");
+    const { tag, styles = {} } = element;
 
     htmlCode += `${tag} {`;
     const cssProperties = Object.entries(styles)
@@ -17,20 +33,8 @@ function generateHTML(jsonData) {
   htmlCode += "</style>\n</head>\n<body>\n";
 
   jsonData.forEach((element) => {
-    const { tag, attributes = {}, content = "", children = [] } = element;
-    const attributesStr = Object.entries(attributes)
-      .map(([key, value]) => `${key}="${value}"`)
-      .join(" ");
-
-    htmlCode += `<${tag} ${attributesStr}>${content}`;
-    if (children.length > 0) {
-      htmlCode += "<div style=\"display: flex;\">";
-      children.forEach((child) => {
-        htmlCode += `<div>${child.content}</div>`;
-      });
-      htmlCode += "</div>";
-    }
-    htmlCode += `</${tag}>\n`;
+    const elementHTML = generateElement(element);
+    htmlCode += elementHTML;
   });
 
   htmlCode += "</body>\n</html>";
