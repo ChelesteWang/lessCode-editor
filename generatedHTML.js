@@ -77,5 +77,14 @@ const jsonData = [
   },
 ];
 
+// 生成完整的 HTML 代码
 const generatedHTML = generateHTML(jsonData);
-console.log(generatedHTML);
+
+// 创建一个新的 Blob 对象
+const blob = new Blob([generatedHTML], { type: "text/html" });
+
+// 创建一个 URL 对象
+const url = URL.createObjectURL(blob);
+
+// 在新窗口中打开生成的完整 HTML 文件
+window.open(url);
